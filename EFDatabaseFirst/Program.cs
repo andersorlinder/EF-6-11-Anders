@@ -241,18 +241,17 @@ namespace EFDatabaseFirst
                                   {
                                       storeID = storegroup.Key,
                                       noOfOrders = storegroup.Select(o => o.OrderId).Count()
-                                  } 
-                                 );
-            var ordersInStoresSorted = ordersInStores.OrderByDescending(s => s.noOfOrders);
+                                  }
+                                 ).OrderByDescending(s => s.noOfOrders);
 
             Console.WriteLine("Topplista  " + "Butik".PadRight(20) + " " + "Antal ordrar");
             int num = 1;
-            foreach (var st in ordersInStoresSorted)
+            foreach (var st in ordersInStores)
             {
                 var store = bikeStores.Stores.Single(s => s.StoreId == st.storeID);
                 Console.WriteLine(
-                                     num.ToString().PadRight(11) 
-                                     + bikeStores.Stores.Single(s => s.StoreId == st.storeID).StoreName.PadRight(20) 
+                                     num.ToString().PadRight(11)
+                                     + bikeStores.Stores.Single(s => s.StoreId == st.storeID).StoreName.PadRight(20)
                                      + " " + st.noOfOrders
                                  );
                 num++;
@@ -264,21 +263,20 @@ namespace EFDatabaseFirst
             Console.Clear();
             var customersInStores = (from o in bikeStores.Orders.ToList()
                                      group o by o.StoreId into storegroup
-                                     select new 
+                                     select new
                                      {
-                                         storeID = storegroup.Key, 
-                                         noOfCustomers = storegroup.Select(c => c.CustomerId).Distinct().Count() 
+                                         storeID = storegroup.Key,
+                                         noOfCustomers = storegroup.Select(c => c.CustomerId).Distinct().Count()
                                      }
-                                    );
-            var customersInStoresSorted = customersInStores.OrderByDescending(s => s.noOfCustomers);
+                                    ).OrderByDescending(s => s.noOfCustomers);
 
             Console.WriteLine("Topplista  " + "Butik".PadRight(20) + " " + "Antal unika kunder");
             int num = 1;
-            foreach (var st in customersInStoresSorted)
+            foreach (var st in customersInStores)
             {
                 Console.WriteLine(
-                                     num.ToString().PadRight(11) 
-                                     + bikeStores.Stores.Single(s => s.StoreId == st.storeID).StoreName.PadRight(20) 
+                                     num.ToString().PadRight(11)
+                                     + bikeStores.Stores.Single(s => s.StoreId == st.storeID).StoreName.PadRight(20)
                                      + " " + st.noOfCustomers
                                  );
                 num++;
@@ -298,21 +296,21 @@ namespace EFDatabaseFirst
                                          revenue = Math.Round(
                                                       storegroup.Sum(
                                                           order => order.OrderItems.Sum(
-                                                              item => item.Quantity * item.ListPrice * (1-item.Discount)
+                                                              item => item.Quantity * item.ListPrice * (1 - item.Discount)
                                                           )
                                                       )
                                                    )
                                      }
-                                    );
-            var revenueFromStoresSorted = revenueFromStores.OrderByDescending(s => s.revenue);
+                                    )
+                                    .OrderByDescending(s => s.revenue);
 
             Console.WriteLine("Topplista  " + "Butik".PadRight(20) + " " + "Summa intäkter");
             int num = 1;
-            foreach (var st in revenueFromStoresSorted)
+            foreach (var st in revenueFromStores)
             {
                 Console.WriteLine(
-                                     num.ToString().PadRight(11) 
-                                     + bikeStores.Stores.Single(s => s.StoreId == st.storeID).StoreName.PadRight(20) 
+                                     num.ToString().PadRight(11)
+                                     + bikeStores.Stores.Single(s => s.StoreId == st.storeID).StoreName.PadRight(20)
                                      + " " + string.Format(new CultureInfo("en-US"), "{0:C0}", st.revenue)
                                  );
                 num++;
@@ -326,27 +324,27 @@ namespace EFDatabaseFirst
                                       join i in bikeStores.OrderItems on
                                            o.OrderId equals i.OrderId
                                       group o by o.StaffId into staffgroup
-                                      select new 
+                                      select new
                                       {
-                                          staffID = staffgroup.Key, 
+                                          staffID = staffgroup.Key,
                                           discount = staffgroup.Sum(
                                                         order => order.OrderItems.Sum(
                                                             item => item.Quantity * item.ListPrice * item.Discount
                                                         )
                                                      )
-                                                      
+
                                       }
-                                     );
-            var discountFromStaffsSorted = discountFromStaffs.OrderByDescending(s => s.discount);
+                                     )
+                                     .OrderByDescending(s => s.discount);
 
             Console.WriteLine("Topplista  " + "Säljare".PadRight(20) + " " + "Summa rabatt");
             int num = 1;
-            foreach (var st in discountFromStaffsSorted)
+            foreach (var st in discountFromStaffs)
             {
                 var staff = bikeStores.Staffs.Single(s => s.StaffId == st.staffID);
-                Console.WriteLine(num.ToString().PadRight(11) 
-                    + (staff.FirstName + " " 
-                    + staff.LastName).PadRight(20) 
+                Console.WriteLine(num.ToString().PadRight(11)
+                    + (staff.FirstName + " "
+                    + staff.LastName).PadRight(20)
                     + " " + string.Format(new CultureInfo("en-US"), "{0:C0}", st.discount)
                     );
                 num++;
